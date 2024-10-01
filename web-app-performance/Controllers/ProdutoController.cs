@@ -19,7 +19,7 @@ namespace web_app_performance.Controllers
             string key = "getProduto";
             redis = ConnectionMultiplexer.Connect("localhost:6379");
             IDatabase db = redis.GetDatabase();
-            await db.KeyExpireAsync(key, TimeSpan.FromSeconds(10));
+            await db.KeyExpireAsync(key, TimeSpan.FromMinutes(10));
             string produto = await db.StringGetAsync(key);
 
             if(!string.IsNullOrEmpty(produto))
@@ -33,7 +33,7 @@ namespace web_app_performance.Controllers
             using var connection = new MySqlConnection(connectionString);
             await connection.OpenAsync();
             string query = "select Id, Nome, Preco, Quantidade, Data from produtos;";
-            var produtos = await connection.QueryAsync<Usuario>(query);
+            var produtos = await connection.QueryAsync<Produtos>(query);
             string produtosJson = JsonConvert.SerializeObject(produtos);
             await db.StringSetAsync(key, produtosJson);
 
